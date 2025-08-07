@@ -14,13 +14,13 @@ pipeline {
 
         stage('Prepare Script') {
             steps {
-                sh 'chmod +x deb-publish.sh'
+                sh 'chmod +x cicd/deb-publish.sh'
             }
         }
 
         stage('Build & Package') {
             steps {
-                sh './deb-publish.sh'
+                sh './cicd/deb-publish.sh'
             }
         }
 
