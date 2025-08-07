@@ -1,34 +1,31 @@
 pipeline {
     agent {
         docker {
-            image 'mcr.microsoft.com/dotnet/sdk:9.0'
+            image 'mcr.microsoft.com/dotnet/sdk:8.0'
+            args '-u root' // or manage permissions more securely if needed
         }
     }
 
     environment {
+        DOTNET_CLI_HOME = "${env.WORKSPACE}/.dotnet"
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Prepare') {
             steps {
-                checkout scm
+                sh 'mkdir -p $DOTNET_CLI_HOME'
             }
         }
 
-        stage('Prepare Script') {
+        stage('Restore + Build') {
             steps {
-                sh 'chmod +x cicd/deb-publish.sh'
+                sh 'chmod +x deb-publish.sh'
+                sh './deb-publish.sh'
             }
         }
 
-        stage('Build & Package') {
-            steps {
-                sh './cicd/deb-publish.sh'
-            }
-        }
-
-        stage('Archive .deb Package') {
+        stage('Archive .deb') {
             steps {
                 archiveArtifacts artifacts: 'release/*.deb', onlyIfSuccessful: true
             }
