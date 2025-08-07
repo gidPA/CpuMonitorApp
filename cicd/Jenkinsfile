@@ -20,8 +20,8 @@ pipeline {
 
         stage('Restore + Build') {
             steps {
-                sh 'chmod +x deb-publish.sh'
-                sh './deb-publish.sh'
+                sh 'chmod +x cicd/deb-publish.sh'
+                sh './cicd/deb-publish.sh'
             }
         }
 
