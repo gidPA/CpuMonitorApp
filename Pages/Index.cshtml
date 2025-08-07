@@ -1,0 +1,80 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "CPU Monitor";
+}
+
+<h1>CPU Usage Monitor</h1>
+
+<div id="cpu-usage" style="font-size: 2em; color: green;">Loading...</div>
+
+<canvas id="cpu-chart" width="800" height="400" style="width: 100%; height: auto;"></canvas>
+
+<script src="/lib/signalr/signalr.min.js"></script>
+<script src="/lib/chartjs/chart.js"></script>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/cpuhub")
+        .build();
+
+    const ctx = document.getElementById('cpu-chart').getContext('2d');
+    const cpuChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [], // Time labels
+            datasets: [{
+                label: 'CPU Usage (%)',
+                data: [],
+                borderWidth: 2,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.3
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Time'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'CPU Usage (%)'
+                    }
+                }
+            }
+        }
+    });
+
+    function formatTime(date) {
+        return date.toLocaleTimeString();
+    }
+
+    connection.on("ReceiveCpuUsage", function (cpuUsage) {
+        document.getElementById("cpu-usage").innerText = `CPU Usage: ${cpuUsage.toFixed(2)}%`;
+
+        const now = new Date();
+        const labels = cpuChart.data.labels;
+        const data = cpuChart.data.datasets[0].data;
+
+        labels.push(formatTime(now));
+        data.push(cpuUsage);
+
+        if (labels.length > 30) {
+            labels.shift();
+            data.shift();
+        }
+
+        cpuChart.update();
+    });
+
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+</script>
