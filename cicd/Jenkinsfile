@@ -30,7 +30,8 @@ pipeline {
             steps {
                 //sh 'chmod +x cicd/deb-publish.sh'
                 sh 'dotnet --info'
-                sh 'dotnet restore --disable-parallel'
+                // sh 'dotnet restore --disable-parallel'
+                sh "ls -a"
                 sh './cicd/deb-publish.sh'
             }
         }
