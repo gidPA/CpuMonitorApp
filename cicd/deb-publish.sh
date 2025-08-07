@@ -9,10 +9,10 @@ RUNTIME="linux-arm64"
 ARCH="arm64"                        
 MAINTAINER="Gideon Purwoko Adityas <gideon.adityas@formulatrix.com>"
 
-PROJECT_DIR=".."
-RELEASE_DIR_BARE="../release"
+PROJECT_DIR="."
+RELEASE_DIR_BARE="${PROJECT_DIR}/release"
 RELEASE_DIR="${RELEASE_DIR_BARE}/${APP_NAME}_${VERSION}"
-PUBLISH_DIR="../publish"
+PUBLISH_DIR="${PROJECT_DIR}/publish"
 SERVICE_NAME=$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]')
 
 #echo "[1/9] Publishing .NET project..."
