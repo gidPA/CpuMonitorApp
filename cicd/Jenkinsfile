@@ -12,12 +12,18 @@ pipeline {
     }
 
     stages {
-        stage('Clean + Prepare') {
+        stage('Clean Workspace') {
             steps {
                 deleteDir()
             }
         }
 
+        stage('Checkout'){
+            steps {
+                checkout scm
+            }
+        }
+        
         stage('Build') {
             steps {
                 sh 'chmod +x cicd/deb-publish.sh'
