@@ -15,6 +15,7 @@ PUBLISH_DIR="${PROJECT_DIR}/publish"
 SERVICE_NAME=$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]')
 
 #echo "[1/9] Publishing .NET project..."
+dotnet clean ${PROJECT_DIR}/${APP_NAME}.csproj
 dotnet publish ${PROJECT_DIR}/${APP_NAME}.csproj -c Release -r $RUNTIME --self-contained true -o "$PUBLISH_DIR"
 
 
