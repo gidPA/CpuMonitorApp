@@ -2,12 +2,12 @@ pipeline {
     agent {
         docker {
             image 'mcr.microsoft.com/dotnet/sdk:9.0'
-            args '-u root' // or manage permissions more securely if needed
+            //args '-u root' // or manage permissions more securely if needed
         }
     }
 
     environment {
-        DOTNET_CLI_HOME = "${env.WORKSPACE}/.dotnet"
+        DOTNET_CLI_HOME = "$WORKSPACE/.dotnet"
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
     }
 
