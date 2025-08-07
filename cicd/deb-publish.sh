@@ -8,12 +8,14 @@ RUNTIME="linux-arm64"
 ARCH="arm64"                        
 MAINTAINER="Gideon Purwoko Adityas <gideon.adityas@formulatrix.com>"
 
-RELEASE_DIR="release/${APP_NAME}_${VERSION}"
-PUBLISH_DIR="./publish"
+PROJECT_DIR=".."
+RELEASE_DIR_BARE="../release"
+RELEASE_DIR="${RELEASE_DIR_BARE}/${APP_NAME}_${VERSION}"
+PUBLISH_DIR="../publish"
 SERVICE_NAME=$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]')
 
 #echo "[1/9] Publishing .NET project..."
-dotnet publish -c Release -r $RUNTIME --self-contained true -o "$PUBLISH_DIR"
+dotnet publish ${PROJECT_DIR}/${APP_NAME}.csproj -c Release -r $RUNTIME --self-contained true -o "$PUBLISH_DIR"
 
 
 
@@ -117,8 +119,8 @@ cp -r "$PUBLISH_DIR"/. "$RELEASE_DIR/opt/$APP_NAME"
 
 
 echo "Building .deb package..."
-cd release
-dpkg-deb --build --root-owner-group "${APP_NAME}_${VERSION}"
-cd ..
+#cd release
+dpkg-deb --build  --root-owner-group "${RELEASE_DIR_BARE}/${APP_NAME}_${VERSION}"
+#cd ..
 
 echo "Done! .deb package created at: release/${APP_NAME}_${VERSION}.deb"
