@@ -9,6 +9,7 @@ pipeline {
     environment {
         DOTNET_CLI_HOME = "${env.WORKSPACE}/.dotnet"
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+        DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "1"
     }
 
     stages {
@@ -27,6 +28,8 @@ pipeline {
         stage('Build') {
             steps {
                 //sh 'chmod +x cicd/deb-publish.sh'
+                sh 'dotnet --info'
+                sh 'dotnet restore --disable-parallel'
                 sh './cicd/deb-publish.sh'
             }
         }
