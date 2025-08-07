@@ -32,6 +32,7 @@ pipeline {
                 sh 'dotnet --info'
                 // sh 'dotnet restore --disable-parallel'
                 sh "ls -a"
+                sh "cd cicd"
                 sh './cicd/deb-publish.sh'
             }
         }
