@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'mcr.microsoft.com/dotnet/sdk:8.0'
-            args '-u root' // or manage permissions more securely if needed
+            // no args here — run as default non-root
         }
     }
 
@@ -12,20 +12,20 @@ pipeline {
     }
 
     stages {
-        stage('Prepare') {
+        stage('Clean + Prepare') {
             steps {
-                sh 'mkdir -p $DOTNET_CLI_HOME'
+                sh 'rm -rf $DOTNET_CLI_HOME && mkdir -p $DOTNET_CLI_HOME'
             }
         }
 
-        stage('Restore + Build') {
+        stage('Build') {
             steps {
-                sh 'chmod +x cicd/deb-publish.sh'
+                sh 'cicd/chmod +x deb-publish.sh'
                 sh './cicd/deb-publish.sh'
             }
         }
 
-        stage('Archive .deb') {
+        stage('Archive') {
             steps {
                 archiveArtifacts artifacts: 'release/*.deb', onlyIfSuccessful: true
             }
