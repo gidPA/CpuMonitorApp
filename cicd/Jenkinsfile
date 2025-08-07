@@ -2,34 +2,30 @@ pipeline {
     agent {
         docker {
             image 'mcr.microsoft.com/dotnet/sdk:9.0'
+            // no args here — run as default non-root
         }
     }
 
     environment {
+        DOTNET_CLI_HOME = "${env.WORKSPACE}/.dotnet"
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Clean + Prepare') {
             steps {
                 deleteDir()
-                checkout scm
             }
         }
 
-        stage('Prepare Script') {
+        stage('Build') {
             steps {
                 sh 'chmod +x cicd/deb-publish.sh'
-            }
-        }
-
-        stage('Build & Package') {
-            steps {
                 sh './cicd/deb-publish.sh'
             }
         }
 
-        stage('Archive .deb Package') {
+        stage('Archive') {
             steps {
                 archiveArtifacts artifacts: 'release/*.deb', onlyIfSuccessful: true
             }
