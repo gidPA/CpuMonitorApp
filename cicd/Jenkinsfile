@@ -23,10 +23,10 @@ pipeline {
                 checkout scm
             }
         }
-        
+
         stage('Build') {
             steps {
-                sh 'chmod +x cicd/deb-publish.sh'
+                //sh 'chmod +x cicd/deb-publish.sh'
                 sh './cicd/deb-publish.sh'
             }
         }
