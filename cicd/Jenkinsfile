@@ -14,23 +14,9 @@ pipeline {
     }
 
     stages {
-        // stage('Clean Workspace') {
-        //     steps {
-        //         deleteDir()
-        //     }
-        // }
-
-        // stage('Checkout'){
-        //     steps {
-        //         checkout scm
-        //     }
-        // }
-
         stage('Build') {
             steps {
-                //sh 'chmod +x cicd/deb-publish.sh'
                 sh 'dotnet --info'
-                // sh 'dotnet restore --disable-parallel'
                 sh "ls -a"
                 sh "cd cicd"
                 sh "pwd"
