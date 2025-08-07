@@ -16,8 +16,6 @@ pipeline {
             steps {
                 sh 'dotnet --info'
                 sh "ls -a"
-                sh "cd cicd"
-                sh "pwd"
                 sh './cicd/deb-publish.sh'
             }
         }
