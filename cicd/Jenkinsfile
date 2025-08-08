@@ -5,6 +5,10 @@ pipeline {
         }
     }
 
+    options {
+        timestamps()
+    }
+
     environment {
         DOTNET_CLI_HOME = "${env.WORKSPACE}/.dotnet"
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
@@ -12,18 +16,43 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
+        stage('Environment Check: Validate .NET SDK') {
             steps {
-                sh 'dotnet --info'
-                sh "ls -a"
-                sh './cicd/deb-publish.sh'
+                sh '''
+                    echo "Checking if 'dotnet' is available..."
+                    if ! command -v dotnet > /dev/null; then
+                        echo "ERROR: dotnet is not installed or not in PATH"
+                        exit 1
+                    fi
+
+                    echo "dotnet SDK info:"
+                    dotnet --info
+                '''
             }
         }
 
-        stage('Archive') {
+        stage('Build & Package: Run custom build script') {
+            steps {
+                sh '''
+                    echo "Running build and packaging script..."
+                    ./cicd/deb-publish.sh
+                '''
+            }
+        }
+
+        stage('Archive Artifacts: Store .deb packages') {
             steps {
                 archiveArtifacts artifacts: 'release/*.deb', onlyIfSuccessful: true
             }
+        }
+    }
+
+    post {
+        failure {
+            echo '❌ Build failed. Check the log above for details.'
+        }
+        success {
+            echo '✅ Build succeeded. Artifacts archived.'
         }
     }
 }
